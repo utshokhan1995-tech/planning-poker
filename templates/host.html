@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Host</title>
+<script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+<h1>Host</h1>
+<ul id="items"></ul>
+<input id="title" placeholder="Item title">
+<button onclick="add()">Add</button>
+<script>
+const socket = io();
+const session_id = "{{ session_id or '' }}";
+socket.on("connect", () => socket.emit("create_or_join",{session_id,name:"Host",as_host:true}));
+socket.on("item_added", d => {
+  const li=document.createElement("li");
+  li.innerText=d.item.title;
+  items.appendChild(li);
+});
+function add(){
+  socket.emit("add_item",{session_id,title:document.getElementById("title").value});
+}
+</script>
+</body>
+</html>
